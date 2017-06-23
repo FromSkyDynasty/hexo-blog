@@ -9,10 +9,13 @@ categories:
     - java & javascript
 ---
 
+JAVA生成简单的图形验证码（上）-- 生成验证码图片
+
 没啥可说的直接上代码了
 
-### CaptchaConfig.java ( 图形的配置)
+说明：CaptchaConfig.java这个类是非必须的，其中的配置可以在核心类中写成固定的值
 
+### CaptchaConfig.java ( 图形的配置)
 ```java
 import org.apache.commons.lang3.StringUtils;
 
