@@ -10,7 +10,7 @@ categories:
 ---
 
 最近在使用SpringMVC时碰到如标题所说的问题，具体原因还未找到，解决办法是采用动态代理的方法（AspectJ），就是常说的AOP，思路来自于[http://www.iteye.com/problems/87048](http://www.iteye.com/problems/87048)中的第一个答案。
-
+<!-- more -->
 解决方法：将拦截器配置为一个动态代理的类,代理@ResponseBody注解的控制器中的方法
 
 ### 拦截器

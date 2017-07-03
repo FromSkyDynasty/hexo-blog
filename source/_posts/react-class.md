@@ -13,7 +13,7 @@ categories:
 
 ### 类,即组件(component),可以重复使用的部分
 React使用createClass来创建类,下面是示例
-
+<!-- more -->
 ### step1:创建空的类
 ```javascript
 var firstClass = React.createClass({

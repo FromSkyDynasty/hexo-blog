@@ -13,7 +13,7 @@ categories:
 ---
 
 属性作用于组件上,属性名可以为任意字符串,下面看例子
-
+<!-- more -->
 ```javascript
 var Demo4Class = React.createClass({
     render: function () {

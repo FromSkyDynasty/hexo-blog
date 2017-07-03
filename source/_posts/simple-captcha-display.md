@@ -14,7 +14,7 @@ categories:
 
 在上一篇文章[生成简单的图形验证码（上）](simple-captcha.html)中已经知道如何生成验证码，这节中我们来学习如何在HTML页面上展示验证码。
 话不多说，撸代码：
-
+<!-- more -->
 首先尝试使用jquery的ajax:
 ```javascript
 $.ajax({

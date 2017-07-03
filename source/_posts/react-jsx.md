@@ -11,7 +11,7 @@ categories:
 ---
 
 在React中,script的type属性为text/babel,与之前写的text/javascript不同,这个就是JSX,下面看代码
-
+<!-- more -->
 ```html
 <!DOCTYPE html>
 <html lang="en">

@@ -15,7 +15,7 @@ categories:
 ### 问题描述：
 
 在Controller的方法中接受一个BigDecimal的参数，在JS传一个小数过来时，js端收到的返回码为[400(Bad Request)](http://baike.baidu.com/link?url=JZwlb1NADJQ22oGk4bAYCKurRFfMiBQIoJQRz42yOQpb4tpWjnjDXDOZbJVbi-WRPW2r6_m2mCLYGeHCF-G7Cq)
-
+<!-- more -->
 ### 解决方法：
 使用SpringMVC提供的**ServletRequestDataBinder**和**@initBinder**注解
 在@InitBinder的注解的源码中有如下注释：

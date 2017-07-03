@@ -16,14 +16,14 @@ categories:
 ---
 
 在前面的章节中我们学习了如何在组件中管理自身的状态，那么问题来了！在实际的开发环境中不可能只有一个组件，那么组件之间进行通信就很关键了，如何通信？我们今天来学习父子组件间的通信！
-
+<!-- more -->
 在React关于Component[生命周期](https://facebook.github.io/react/docs/react-component.html#the-component-lifecycle)的介绍中，在Updating中有**componentWillReceiveProps**这样一个状态,它的介绍如下
 >componentWillReceiveProps() is invoked before a mounted component receives new props. If you need to update the state in response to prop changes (for example, to reset it), you may compare this.props and nextProps and perform state transitions using this.setState() in this method.
 
 大概的意思就是已经处于Mounted状态的组件在收到新的属性（props）之前的时候会调用componentWillReceiveProps这个方法，如果你需要改变状态去响应属性的变化，你可能要比较当前的props和改变的props然后使用在这个方法中使用setState去改变状态。
-#
+
 需要注意的是如果shouldComponentUpdate返回了false,componentWillReceiveProps、render和componentDidMount方法将不会执行
-#
+
 下面看例子：
 ### 父组件
 ```javascript

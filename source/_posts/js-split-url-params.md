@@ -10,6 +10,7 @@ categories:
 ---
 
 路径中的参数格式为key1=value1&key2=value2...使用?跟在请求路径上,那么获取参数就可以这样:
+<!-- more -->
 ```javascript
 function(url){
     url = url.split('?')[1];

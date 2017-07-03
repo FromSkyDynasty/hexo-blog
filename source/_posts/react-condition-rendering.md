@@ -15,6 +15,7 @@ categories:
 ---
 
 按条件渲染即指根据不同的条件显示不同的内容,就像下面的例子:
+<!-- more -->
 ```javascript
 var userGreet = <h1>Welcome back!</h1>;
 var guestGreet = <h1>Please login First.</h1>;

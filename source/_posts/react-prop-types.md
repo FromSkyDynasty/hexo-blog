@@ -13,7 +13,7 @@ categories:
 ---
 
 ## PropTypes是用于验证props的属性类型
-
+<!-- more -->
 ```javascript
 var Demo5Class = React.createClass({
     propTypes: {

@@ -14,6 +14,7 @@ categories:
 ---
 
 ### 尝试使用前面所学的知识去更新UI,大致代码如下:
+<!-- more -->
 ```javascript
 function showNow() {
     const element = (

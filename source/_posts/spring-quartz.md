@@ -10,7 +10,7 @@ categories:
 ---
 
 [quartz](http://www.quartz-scheduler.org/)是一个强大的开源作业调度框架，支持分布式，这篇文章教会大家如何在spring中配置定时器（分布式配置请移步[http://www.tuicool.com/articles/B3qeUrB](http://www.tuicool.com/articles/B3qeUrB)）。
-
+<!-- more -->
 ### maven配置
 
 引入quartz的依赖
