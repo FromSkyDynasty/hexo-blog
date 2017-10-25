@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[React学习笔记 -- 父子组件的通信]]></title>
+    <url>%2Farchives%2Freact-parent-children-connection.html</url>
+    <content type="text"><![CDATA[在前面的章节中我们学习了如何在组件中管理自身的状态，那么问题来了！在实际的开发环境中不可能只有一个组件，那么组件之间进行通信就很关键了，如何通信？我们今天来学习父子组件间的通信！在React关于Component生命周期的介绍中，在Updating中有componentWillReceiveProps这样一个状态,它的介绍如下 componentWillReceiveProps() is invoked before a mounted component receives new props. If you need to update the state in response to prop changes (for example, to reset it), you may compare this.props and nextProps and perform state transitions using this.setState() in this method. 大概的意思就是已经处于Mounted状态的组件在收到新的属性（props）之前的时候会调用componentWillReceiveProps这个方法，如果你需要改变状态去响应属性的变化，你可能要比较当前的props和改变的props然后使用在这个方法中使用setState去改变状态。 需要注意的是如果shouldComponentUpdate返回了false,componentWillReceiveProps、render和componentDidMount方法将不会执行 下面看例子： 父组件123456789101112131415161718192021222324252627282930313233343536373839class Parent extends React.Component&#123; constructor(props)&#123; super(props); this.state = &#123; parentText:'父组件的初始状态', childText:'子组件的初始状态' &#125;; this.handleParentButtonClick = this.handleParentButtonClick.bind(this); this.handleChildButtonClick = this.handleChildButtonClick.bind(this); &#125; /** * 父组件的按钮点击,改变子组件label的值 */ handleParentButtonClick()&#123; this.setState(&#123; childText:'父组件按钮点击，子组件label值改变' &#125;); &#125; /** * 子组件的按钮点击，改变父组件label的值 */ handleChildButtonClick()&#123; this.setState(&#123; parentText:'子组件按钮点击，父组件label值改变' &#125;); &#125; render()&#123; return &lt;div&gt; &lt;p&gt; &lt;label&gt;&#123;this.state.parentText&#125;&lt;/label&gt; &lt;button onClick=&#123;this.handleParentButtonClick&#125;&gt;父组件按钮点击&lt;/button&gt; &lt;/p&gt; &lt;Child text=&#123;this.state.childText&#125; handleClick=&#123;this.handleChildButtonClick&#125; /&gt; &lt;/div&gt;; &#125;&#125; 子组件1234567891011121314151617181920212223class Child extends React.Component&#123; constructor(props)&#123; super(props); this.handleChildClick = this.handleChildClick.bind(this); &#125; handleChildClick()&#123; this.props.handleClick(); &#125; render()&#123; return &lt;p&gt; &lt;label&gt;&#123;this.props.text&#125;&lt;/label&gt; &lt;button onClick=&#123;this.handleChildClick&#125;&gt;子组件按钮点击&lt;/button&gt; &lt;/p&gt;; &#125;&#125;Child.propTypes = &#123; handleClick:React.PropTypes.func, text:React.PropTypes.string&#125;; 效果是子组件的按钮点击，父组件的label值改变，父组件的按钮点击，子组件的label改变。这里的关键就是当Child组件的props改变时会重新渲染，子组件的按钮点击实际上调用的是父组件里的方法，即直接改变父组件的状态。#演示地址：http://codepen.io/lisijie/pen/KNjLBj]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+        <tag>react 生命周期</tag>
+        <tag>渲染</tag>
+        <tag>组件间的通讯</tag>
+        <tag>Parent &amp; Children</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习笔记 -- 按条件渲染页面(conditional-rendering)]]></title>
+    <url>%2Farchives%2Freact-condition-rendering.html</url>
+    <content type="text"><![CDATA[按条件渲染即指根据不同的条件显示不同的内容,就像下面的例子:12345678910111213141516var userGreet = &lt;h1&gt;Welcome back!&lt;/h1&gt;;var guestGreet = &lt;h1&gt;Please login First.&lt;/h1&gt;;function Greet(props) &#123; const isLogin = props.isLogin; if (isLogin) &#123; return userGreet; &#125; else &#123; return guestGreet; &#125;&#125;ReactDOM.render( &lt;Greet isLogin=&#123;false&#125;/&gt;, document.getElementById('demo7')); 当isLogin为true的时候显示”Welcome back”,false时显示”Plese Login First”,下面的例子通过点击登录、登出按钮模拟不同的isLogin状态下显示的内容 12345678910111213141516171819202122232425262728293031323334353637383940414243444546function LoginButton(props) &#123; return ( &lt;button onClick=&#123;props.onClick&#125;&gt;登录&lt;/button&gt; );&#125;function LogoutButton(props) &#123; return ( &lt;button onClick=&#123;props.onClick&#125;&gt;登出&lt;/button&gt; );&#125;class LoginControl extends React.Component &#123; constructor(props) &#123; super(props); this.loginClick = this.loginClick.bind(this); this.logoutClick = this.logoutClick.bind(this); this.state = &#123;isLogin: false&#125;; &#125; loginClick() &#123; this.setState(&#123; isLogin: true &#125;); &#125; logoutClick() &#123; this.setState(&#123; isLogin: false &#125;); &#125; render() &#123; const isLogin = this.state.isLogin; let button = null; if (isLogin) &#123; button = &lt;LogoutButton onClick=&#123;this.logoutClick&#125;/&gt; &#125; else &#123; button = &lt;LoginButton onClick=&#123;this.loginClick&#125;/&gt; &#125; return &lt;div&gt; &lt;Greet isLogin=&#123;isLogin&#125;/&gt; &#123;button&#125; &lt;/div&gt; &#125;&#125; 在render方法中首先获取当前的登录状态，根据isLogin输出不同文字和不同的按钮。 在判断的时候可以使用JSX的逻辑运算符&amp;&amp;，类似isLogin&amp;&amp;doSomething(),也可使用条件表达式：1return &#123;isLogin?(&lt;LoginButton onClick=&#123;this.loginClick&#125;/&gt;):(&lt;LoginButton onClick=&#123;this.loginClick&#125;/&gt;)&#125;; 通过条件阻止组件的渲染12345678910111213141516171819202122232425262728293031323334353637function WarningBanner(props) &#123; if (!props.warning) &#123; return null; &#125; return &lt;h2&gt;Warning!!!&lt;/h2&gt;;&#125;class Page extends React.Component &#123; constructor(props) &#123; super(props); this.showWarning = this.showWarning.bind(this); this.state = &#123; isShow: false &#125;; &#125; showWarning() &#123; this.setState(prev=&gt; (&#123; isShow:!prev.isShow &#125;)); &#125; render() &#123; return (&lt;div&gt; &lt;WarningBanner warning=&#123;this.state.isShow&#125;/&gt; &lt;button onClick=&#123;this.showWarning&#125;&gt; &#123;this.state.isShow ? "hide" : "show"&#125; &lt;/button&gt; &lt;/div&gt; ); &#125;&#125;ReactDOM.render( &lt;Page /&gt;, document.getElementById('demo7')); 通过点击show/hide按钮显示和隐藏WarningBanner]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+        <tag>react 生命周期</tag>
+        <tag>渲染</tag>
+        <tag>按条件渲染</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习 -- 类(Class)]]></title>
+    <url>%2Farchives%2Freact-class.html</url>
+    <content type="text"><![CDATA[类,即组件(component),可以重复使用的部分React使用createClass来创建类,下面是示例 step1:创建空的类123var firstClass = React.createClass(&#123;&#125;); 在浏览器中运行将会报如下错误:意思就是创建类必须实现render方法 step2:实现render方法12345var firstClass = React.createClass(&#123; render: function () &#123; return &lt;h1&gt;This is first components!&lt;/h1&gt;; &#125;&#125;); 运行正常 step3:使用组件12345678910var firstClass = React.createClass(&#123; render: function () &#123; return &lt;h1&gt;This is first components!&lt;/h1&gt;; &#125;&#125;);ReactDOM.render( &lt;firstClass/&gt;, document.getElementById('demo3')); 运行后未报错,也没有显示预期的结果 step4:将firstClass改为FirstClass12345678910var FirstClass = React.createClass(&#123; render: function () &#123; return &lt;h1&gt;This is first components!&lt;/h1&gt;; &#125;&#125;);ReactDOM.render( &lt;FirstClass /&gt;, document.getElementById('demo3')); 运行成功,下面是运行结果: 原因:React 的 JSX 里约定分别使用首字母大、小写来区分本地组件的类和 HTML 标签。render渲染时，会把大写的组件名定义为自定义组件，把小写的组件名定义为HTML自带的标签名进行渲染。]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习笔记 -- 状态和生命周期(State and Lifecycle)]]></title>
+    <url>%2Farchives%2Freact-lifecycle.html</url>
+    <content type="text"><![CDATA[尝试使用前面所学的知识去更新UI,大致代码如下: 1234567891011121314function showNow() &#123; const element = ( &lt;div&gt; 现在时间是:&#123;new Date().toLocaleTimeString()&#125; &lt;/div&gt; ); ReactDOM.render( element, document.getElementById('demo5') );&#125;setInterval(showNow, 1000); 那么每隔一秒就会去刷新当前的时间 如果我们要让其自动更新时间,而不必去调用setInterval来循环刷新,就用到了state state与props类似,但state是组件私有的,由组件全权控制 要实现自动更新,就要将showNow由函数改为组件,并且这个组件继承与React.Component,而且这个类要实现render方法,拥有一个构造器.(是不是与java的类很相似呢!!)12345678910111213141516171819class Clock extends React.Component &#123; constructor(props) &#123; super(props); this.state = &#123; date: new Date() &#125;; &#125; render() &#123; return (&lt;div&gt; 现在时间是:&#123;this.state.date.toLocaleTimeString()&#125; &lt;/div&gt;) &#125;&#125;ReactDOM.render( &lt;Clock/&gt;, document.getElementById('demo5')); 运行后,显示了当前时间,但并没有更新时间,原因是只是给了状态,并没有实现定时更新,也就是下面要说的生命周期: componentDidMount表示组件已经输出到DOMcomponentWillUnmount表示组件任务完成,即将解除”安装” 据此,在componentDidMount中启动定时器,然后在componentWillUnmount中结束定时器,将Clock改为:123456789101112131415161718192021222324252627282930class Clock extends React.Component &#123; constructor(props) &#123; super(props); this.state = &#123; date: new Date() &#125;; &#125; render() &#123; return (&lt;div&gt; 现在时间是:&#123;this.state.date.toLocaleTimeString()&#125; &lt;/div&gt;) &#125; showNow() &#123; this.setState(&#123; date: new Date() &#125;); &#125; componentDidMount() &#123; this.timer = setInterval( ()=&gt;this.showNow(), 1000); &#125; componentWillUnmount() &#123; clearInterval(this.timer); &#125;&#125; 运行结果:每隔一秒就会去刷新当前的时间 在官方文档中需要注意一个地方: 不要直接去使用this.state.date=something去直接更新state,因为this.props和this.state可能是异步更新的，你不应该依赖它们的值来计算下一个状态。应该使用setState()去更新状态 这些内容很复杂,还得花些时间去消化!!!]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+        <tag>react 生命周期</tag>
+        <tag>组件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习笔记 -- 属性(props)]]></title>
+    <url>%2Farchives%2Freact-prop-types.html</url>
+    <content type="text"><![CDATA[PropTypes是用于验证props的属性类型 123456789101112131415var Demo5Class = React.createClass(&#123; propTypes: &#123; name: React.PropTypes.string.isRequired &#125;, render: function () &#123; return &lt;h1&gt;&#123;this.props.name&#125;&lt;/h1&gt; &#125;&#125;);var num = "123";ReactDOM.render( &lt;Demo5Class name=&#123;num&#125;/&gt;, document.getElementById("demo5")); 将num改为数字再试1var num = 123; 也会正常运行,但在控制台上将会显示如下警告: 设置默认的属性值 123456789101112131415161718var Demo5Class = React.createClass(&#123; propTypes: &#123; name: React.PropTypes.string.isRequired &#125;, render: function () &#123; return &lt;h1&gt;&#123;this.props.name&#125;&lt;/h1&gt; &#125;, getDefaultProps: function () &#123; return &#123; name: "My name is Default" &#125; &#125;&#125;);ReactDOM.render( &lt;Demo5Class /&gt;, document.getElementById("demo5"));]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+        <tag>propTypes</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习笔记 -- 属性(props)]]></title>
+    <url>%2Farchives%2Freact-props.html</url>
+    <content type="text"><![CDATA[属性作用于组件上,属性名可以为任意字符串,下面看例子12345678910var Demo4Class = React.createClass(&#123; render: function () &#123; return &lt;h1&gt;Hello,&#123;this.props.name&#125;&lt;/h1&gt; &#125;&#125;);ReactDOM.render( &lt;Demo4Class name="Jack"/&gt;, document.getElementById("demo4")); 运行结果: 特殊props1.children children是props中的一个特殊属性,表示组件的子节点,下面是例子:1234567891011121314151617181920var Demo4Class = React.createClass(&#123; render: function () &#123; return &lt;ul&gt; &#123; React.Children.map(this.props.children, function (child) &#123; return &lt;li&gt;&#123;child&#125;&lt;/li&gt; &#125;) &#125; &lt;/ul&gt; &#125;&#125;);ReactDOM.render( &lt;Demo4Class&gt; &lt;span&gt;Hello,Jack!&lt;/span&gt; &lt;span&gt;Hello,Lily!&lt;/span&gt; &lt;span&gt;Hello,Tiger!&lt;/span&gt; &lt;/Demo4Class&gt;, document.getElementById("demo4")); 运行结果: 尝试使用children作为普通属性使用12345678910var Demo4Class = React.createClass(&#123; render: function () &#123; return &lt;h1&gt;Hello,&#123;this.props.children&#125;&lt;/h1&gt; &#125;&#125;);ReactDOM.render( &lt;Demo4Class children="Jack"/&gt;, document.getElementById("demo4")); 无异常,且正常运行,但是建议在开发中不要使用children作为普通属性,以免混淆 2.js保留关键字class,for 若作为普通属性,也可正常运行,但也不建议使用这两个甚至于其他html标签的一些属性]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+        <tag>react类</tag>
+        <tag>props</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[React学习 - JSX语法(js与html混写)]]></title>
+    <url>%2Farchives%2Freact-jsx.html</url>
+    <content type="text"><![CDATA[在React中,script的type属性为text/babel,与之前写的text/javascript不同,这个就是JSX,下面看代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849&lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt; &lt;meta charset="UTF-8"&gt; &lt;title&gt;React第二弹&lt;/title&gt; &lt;script type="text/javascript" src="../react.js"&gt;&lt;/script&gt; &lt;script type="text/javascript" src="../react-dom.js"&gt;&lt;/script&gt; &lt;script type="text/javascript" src="../browser.min.js"&gt;&lt;/script&gt;&lt;/head&gt;&lt;body&gt;&lt;div id="demo2"&gt;&lt;/div&gt;&lt;script type="text/babel"&gt; /** example1 **/ var names = ['Alice', "Tom", "Lily"]; ReactDOM.render( &lt;div&gt; &#123; names.map(function (item) &#123; // 1.return "name:" + item; return &lt;h1&gt;name:&#123;item&#125;&lt;/h1&gt; &#125;) &#125; &lt;/div&gt;, document.getElementById('demo2') ); /** example2 **/ var doms = [ &lt;h1&gt;name:Alice&lt;/h1&gt;, &lt;h1&gt;name:Tom&lt;/h1&gt;, &lt;h1&gt;name:Lily&lt;/h1&gt; ]; ReactDOM.render( &lt;div&gt;&#123;doms&#125;&lt;/div&gt;, document.getElementById('demo2') ); /** example3 **/ var json = &#123; "demo1":&lt;h1&gt;Hello world!&lt;/h1&gt;, "demo2":&lt;h1&gt;JSX语法&lt;/h1&gt; &#125;; ReactDOM.render( &#123;json&#125;, document.getElementById('demo2') );&lt;/script&gt;&lt;/body&gt;&lt;/html&gt; example1 :例子一中预先定义了普通的JS数组,然后在div块中循环输出,结果如下: example2:例子二中的数组采用JSX定义,然后通过{doms}调用,react内部循环处理,结果与example1相同 example3例子三定义了一个JSX形式的json数据,仿example2进行输出,结果得到如下错误: 错误的大概意思就是”对象不是一个有效的react节点,如果想渲染一个集合,用数组替换或者用createFragment创建”]]></content>
+      <categories>
+        <category>javascript</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>react</tag>
+        <tag>jsx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[javascript使用正则表达式获取路径中的参数]]></title>
+    <url>%2Farchives%2Fjs-split-url-params.html</url>
+    <content type="text"><![CDATA[路径中的参数格式为key1=value1&amp;key2=value2…使用?跟在请求路径上,那么获取参数就可以这样:123456789function(url)&#123; url = url.split('?')[1]; var pairs = url.split('&amp;'); for(var i=0;i&lt;pairs.length;i++)&#123; var pair = pairs[i]; var values = pair.split('='); console.log('key='+values[0] + ',value='+values[1]); &#125;&#125; 但是不仅用起来麻烦,而且处理起特殊的url有误,使用正则表达式则会避免这些 获取单个参数12345678/** * @param name 要取参数的key */function getQueryString(name) &#123; var reg = new RegExp("(^|&amp;)" + name + "=([^&amp;]*)(&amp;|$)", "i"); var r = window.location.search.substr(1).match(reg); if (r != null) return unescape(r[2]); return null;&#125; 获取全部参数12345678910var params = &#123;&#125;;function getUrlParams(url) &#123; var queryRegExp = new RegExp(&apos;([\\?|&amp;])(.+?)=([^&amp;?]*)&apos;, &apos;ig&apos;); var result = queryRegExp.exec(url); while (result) &#123; console.log(result); params[result[2]] = result[3]; result = queryRegExp.exec(url); &#125;&#125; 在queryRegExp中’ig’的含义为不区分大小写,匹配全部为什么选取result[2]和result[3],看result在控制台中的结果: 参考链接: http://www.netingcn.com/url-get-parameter-value.html https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec]]></content>
+      <categories>
+        <category>javascript</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>正则表达式</tag>
+        <tag>获取url的参数</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[生成简单的图形验证码（下）-- 在页面中展示验证码]]></title>
+    <url>%2Farchives%2Fsimple-captcha-display.html</url>
+    <content type="text"><![CDATA[在上一篇文章生成简单的图形验证码（上）中已经知道如何生成验证码，这节中我们来学习如何在HTML页面上展示验证码。话不多说，撸代码：首先尝试使用jquery的ajax:1234567$.ajax(&#123; url:'http://localhost:8080/captcha', type:'get', success:function(img)&#123; console.log(img); &#125;&#125;); 控制台将会打印一串乱码，因为ajax并没有解析img的dataType(大家可以尝试换几种dataType来请求) 解决方案方案一：既然在response中设置了返回的类型为image/jpeg，那么将请求验证码的链接作为img的src肯定是没有问题的 1&lt;img src=&quot;http://localhost:8080/captcha&quot; /&gt; 成功输出验证码，那么问题来了:浏览器本身是会缓存图片的，img的使用相同的src很大概率会被缓存下来，解决办法就是在链接后面加上随机的参数，如下所示： 1234567&lt;img src="http://localhost:8080/captcha" id="captcha" /&gt;&lt;button onclick="getCaptcha()"&gt;看不清，换一张&lt;/button&gt;&lt;script&gt; function getCaptcha()&#123; document.getElementById('captcha').src = 'http://localhost:8080/captcha?ver='+new Date().getTime(); &#125;&lt;/script&gt; 方案二：使用XMLHttpRequest,使用这个请求将responseType设置为blob(即返回类型为文件)，然后获取Blob的url,赋值给img1234567891011function getCaptcha()&#123; XMLHttpRequest xhr = new XMLHttpRequest(); xhr.open('get', 'http://localhost:8080/captcha', true); xhr.responseType = 'blob'; xhr.onload = function () &#123; if (this.status === 200) &#123; var resp = this.response; document.getElementById('captcha').src = window.URL.createObjectURL(resp); &#125; &#125;;&#125; 参考文章ajax请求并处理二进制流(图片) 理解DOMString、Document、FormData、Blob、File、ArrayBuffer数据类型 java web项目生成验证码的解决方案]]></content>
+      <categories>
+        <category>java &amp; javascript</category>
+      </categories>
+      <tags>
+        <tag>javascript</tag>
+        <tag>ajax</tag>
+        <tag>blob</tag>
+        <tag>xhr</tag>
+        <tag>XMLHttpRequest</tag>
+        <tag>验证码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[JAVA生成简单的图形验证码（上）-- 生成验证码图片]]></title>
+    <url>%2Farchives%2Fsimple-captcha.html</url>
+    <content type="text"><![CDATA[JAVA生成简单的图形验证码（上）– 生成验证码图片 没啥可说的直接上代码了说明：CaptchaConfig.java这个类是非必须的，其中的配置可以在核心类中写成固定的值 CaptchaConfig.java ( 图形的配置)123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051import org.apache.commons.lang3.StringUtils;import java.util.Properties;public class CaptchaConfig &#123; private int width = 120; // 图片的宽度 private int height = 36; // 图片的高度 private int length = 4; // 验证码长度 private int fontSize = 20; // 验证码的字体大小 public static CaptchaConfig getDefault() &#123; return DEFAULT; &#125; // .... // Getter/Setter省略 private static final String CAPTCHA_CONFIG_PATH = "/captcha.properties"; private static final CaptchaConfig DEFAULT = new CaptchaConfig(); /** * 读取验证码的配置（可要可不要） */ static &#123; Properties properties = new Properties(); try &#123; properties.load(CaptchaConfig.class.getResourceAsStream(CAPTCHA_CONFIG_PATH)); String h = properties.getProperty("height"); String w = properties.getProperty("width"); String l = properties.getProperty("length"); String fs = properties.getProperty("font_size"); if (StringUtils.isNotBlank(h)) &#123; DEFAULT.height = Integer.parseInt(h); &#125; if (StringUtils.isNotBlank(w)) &#123; DEFAULT.width = Integer.parseInt(w); &#125; if (StringUtils.isNotBlank(l)) &#123; DEFAULT.length = Integer.parseInt(l); &#125; if (StringUtils.isNotBlank(fs)) &#123; DEFAULT.fontSize = Integer.parseInt(fs); &#125; &#125; catch (Exception e) &#123; e.printStackTrace(); &#125; &#125;&#125; ImageCaptcha.java(生成验证码的核心类)123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136import javax.imageio.ImageIO;import java.awt.*;import java.awt.image.BufferedImage;import java.io.ByteArrayOutputStream;import java.io.IOException;import java.io.OutputStream;import java.util.Random;public class ImageCaptcha &#123; /** * 显示的字符（为了识别方便，去掉了0和o) */ private static final char[] chars = &#123; 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's' , 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9' &#125;; private char[] value; private CaptchaConfig config; private Random random = new Random(); private int startX, startY; // 字符起始的位置 private BufferedImage image; // 生成的验证码图片对象 private boolean created = false; // 标识验证码是否已经创建 public ImageCaptcha(CaptchaConfig config) &#123; this.config = config; value = new char[config.getLength()]; startX = config.getWidth() / (config.getLength() + 2); // 每个字的间隔一样 startY = config.getHeight() - (config.getHeight() - config.getFontSize()) / 2; // 垂直居中 &#125; /** * 创建验证码 */ public void create() &#123; // 创建图片对象 image = new BufferedImage(config.getWidth(), config.getHeight(), BufferedImage.TYPE_INT_RGB); // 创建画笔 Graphics2D graphics2D = image.createGraphics(); // 设置背景颜色 graphics2D.setColor(Color.lightGray); Font font = new Font(Font.SANS_SERIF, Font.PLAIN, config.getFontSize()); // 设置字体 graphics2D.setFont(font); // 填充矩形 graphics2D.fillRect(0, 0, config.getWidth(), config.getHeight()); // 绘制干扰线 graphics2D.setColor(Color.black); for (int i = 0; i &lt; 16; i++) &#123; int offsetX = random.nextInt(12), offsetY = random.nextInt(12); // 干扰线偏移量 int x = random.nextInt(config.getWidth()); int y = random.nextInt(config.getHeight()); graphics2D.drawLine(x, y, x + offsetX, y + offsetY); &#125; // 绘制验证码 int r, g, b; // RGB色值，随机的颜色 String temp; for (int i = 0; i &lt; config.getLength(); i++) &#123; char c = randomChar(); value[i] = c; temp = String.valueOf(c); r = random.nextInt(255); g = random.nextInt(255); b = random.nextInt(255); graphics2D.setColor(new Color(r, g, b)); graphics2D.drawString(temp, (i + 1) * startX, startY); &#125; created = true; &#125; /** * 得到图片的字节流 */ public byte[] getImageData() throws IOException &#123; checkState(); ByteArrayOutputStream out = null; try &#123; out = new ByteArrayOutputStream(); writeTo(out); return out.toByteArray(); &#125; finally &#123; if (out != null) &#123; out.flush(); out.close(); &#125; &#125; &#125; /** * 将图片输出到输出流上 * * @param outputStream 输出流对象 * @throws IOException 写入图片出错时 */ public void writeTo(OutputStream outputStream) throws IOException &#123; if (outputStream == null) &#123; throw new IllegalArgumentException("输出对象不能为空"); &#125; checkState(); ImageIO.write(image, "jpeg", outputStream); &#125; /** * 生成随机的字符 * * @return chars中的字符 */ private char randomChar() &#123; return chars[random.nextInt(33)]; &#125; public BufferedImage getImage() &#123; checkState(); return image; &#125; public String getCaptchaString() &#123; checkState(); return new String(value); &#125; /** * 检查验证码是否已经创建 */ private void checkState() &#123; if (!created) &#123; throw new IllegalStateException("验证码未创建,请先调用create方法"); &#125; &#125;&#125; 在初始化startY时,还是没搞明白坐标轴是设置的，希望好心人士告知！！！ 测试1234567891011121314151617181920212223import org.junit.Test;import java.io.File;import java.io.FileOutputStream;import java.io.IOException;public class ImageCaptchaTest &#123; @Test public void generateCaptchaTest() throws IOException &#123; CaptchaConfig captchaConfig = CaptchaConfig.getDefault(); ImageCaptcha captcha = new ImageCaptcha(captchaConfig); captcha.create(); File file = new File("F:/java/captchaTest.jpg"); if (file.exists()) &#123; file.delete(); &#125; file.createNewFile(); FileOutputStream outputStream = new FileOutputStream(file); System.out.println(captcha.getCaptchaString()); captcha.writeTo(outputStream); &#125;&#125; 参考文章java web项目生成验证码的解决方案]]></content>
+      <categories>
+        <category>java &amp; javascript</category>
+      </categories>
+      <tags>
+        <tag>验证码</tag>
+        <tag>captcha</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[springMVC参数类型转换]]></title>
+    <url>%2Farchives%2Fspring-type-converter.html</url>
+    <content type="text"><![CDATA[最近在使用SpringMVC的时候碰到如下问题，故记录下来 问题描述：在Controller的方法中接受一个BigDecimal的参数，在JS传一个小数过来时，js端收到的返回码为400(Bad Request) 解决方法：使用SpringMVC提供的ServletRequestDataBinder和@initBinder注解在@InitBinder的注解的源码中有如下注释： Annotation that identifies methods which initialize the {@link org.springframework.web.bind.WebDataBinder} which will be used for populating command and form object arguments of annotated handler methods. 大致的意思是标识初始化WebDataBinder的方法的注解，其中将用于填充命令和表单对象参数的注释处理程序方法。 ServletRequestDataBinder继承于WebDataBinder，其中registerCustomEditor方法用于注册自定义的转换器，转换器的类型为PropertyEditor接口，PropertyEditorSupport已经实现了该接口，我们只需要复写其中的setAsText方法，然后调用setValue方法将转换过得值赋给需要的变量。 代码如下：BigDecimalEditor.java123456789101112131415161718192021import org.apache.commons.lang3.StringUtils;import java.beans.PropertyEditorSupport;import java.math.BigDecimal;public class BigDecimalEditor extends PropertyEditorSupport &#123; @Override public void setAsText(String text) throws IllegalArgumentException &#123; if (StringUtils.isBlank(text)) &#123; setValue(null); &#125; else &#123; try &#123; double temp = Double.parseDouble(text); setValue(BigDecimal.valueOf(temp)); &#125; catch (Exception e) &#123; throw new IllegalArgumentException(); &#125; &#125; &#125;&#125; XXXController.java12345678910111213@Controllerpublic class XXXController&#123; @RequestMapping(value="/path") public void someMethod(BigDecimal someVar)&#123; System.out.println(someVar); &#125; @InitBinder public void initWebBinder(ServletRequestDataBinder binder) &#123; binder.registerCustomEditor(BigDecimal.class, new BigDecimalEditor()); &#125;&#125; 如需要转换其他类型，与上述方法类似]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>spring</tag>
+        <tag>java</tag>
+        <tag>springMVC</tag>
+        <tag>类型转换</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Spring使用quartz配置定时器]]></title>
+    <url>%2Farchives%2Fspring-quartz.html</url>
+    <content type="text"><![CDATA[quartz是一个强大的开源作业调度框架，支持分布式，这篇文章教会大家如何在spring中配置定时器（分布式配置请移步http://www.tuicool.com/articles/B3qeUrB）。 maven配置引入quartz的依赖12345&lt;dependency&gt; &lt;groupId&gt;org.quartz-scheduler&lt;/groupId&gt; &lt;artifactId&gt;quartz&lt;/artifactId&gt; &lt;version&gt;2.2.1&lt;/version&gt;&lt;/dependency&gt; Spring中的配置123456789101112131415161718192021222324&lt;!-- 任务bean --&gt;&lt;bean id="taskObj" class="com.example.TaskObj"/&gt;&lt;!-- 任务 --&gt;&lt;bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"&gt; &lt;property name="targetObject" ref="taskObj"/&gt; &lt;property name="targetMethod" value="taskMethod"/&gt;&lt;/bean&gt;&lt;!-- 任务触发器 --&gt;&lt;bean id="taskTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"&gt; &lt;property name="jobDetail" ref="jobDetail"/&gt; &lt;property name="startDelay" value="0"/&gt; &lt;property name="cronExpression" value="0 0 0/1 * * ?"/&gt;&lt;/bean&gt;&lt;!-- 任务调度工厂 --&gt;&lt;bean id="timerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"&gt; &lt;property name="triggers"&gt; &lt;list&gt; &lt;ref bean="taskTrigger"/&gt; &lt;/list&gt; &lt;/property&gt;&lt;/bean&gt; 配置说明 taskObj: 任务所在的实体#jobDetail： 交由quartz管理的任务 – targetObject:参见taskObj– targetMethod:定时器启动时执行的方法# taskTrigger：任务触发器 – jobDetail:任务– startDelay：延时多少时间执行，默认为0– cronExpression：任务调度的时间表达式，关于这个表达式的格式可参见http://www.cnblogs.com/yaowen/p/3779284.html,若是不理解可以偷懒：在线生成cronExpression。(建议理解后自己写) timerFactory：任务调度工厂 配置完成，赶快去试下效果吧]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>spring</tag>
+        <tag>quartz</tag>
+        <tag>定时器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[解决：SpringMVC使用拦截器后ajax无法获取返回的数据]]></title>
+    <url>%2Farchives%2Fajax-response-body.html</url>
+    <content type="text"><![CDATA[最近在使用SpringMVC时碰到如标题所说的问题，具体原因还未找到，解决办法是采用动态代理的方法（AspectJ），就是常说的AOP，思路来自于http://www.iteye.com/problems/87048中的第一个答案。解决方法：将拦截器配置为一个动态代理的类,代理@ResponseBody注解的控制器中的方法 拦截器12345678910111213141516171819202122232425262728293031/*AspectJ动态代理的注解*/@Aspectpublic class SomeInterceptor implements HandlerInterceptor&#123; @Override public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) throws Exception&#123; // 验证 return true; &#125; // ... 其他实现的方法，这里暂时不需要 // 设置切面 @Pointcut(value = "@annotation(org.springframework.web.bind.annotation.ResponseBody)") public void pointCut() &#123; &#125; // 引用配置的切面，注意要有返回值 @Around(value = "pointCut()") public Object doAround(ProceedingJoinPoint point) &#123; Object result; try &#123; result = point.proceed(); &#125; catch (Throwable e) &#123; e.printStackTrace(); // 异常处理，也可返回result result = .... &#125; return result; &#125;&#125; Spring配置123&lt;!-- 开启自动代理 --&gt;&lt;aop:aspectj-autoproxy proxy-target-class="true" /&gt;&lt;bean id="aspect" class="上面的拦截器的类" /&gt; 注意：若Spring主配置文件和SpringMVC的配置文件不在一起，则两个文件都需要配置aspectj的自动代理]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>spring</tag>
+        <tag>ResponseBody</tag>
+        <tag>spring拦截器</tag>
+      </tags>
+  </entry>
+</search>
