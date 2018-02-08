@@ -5,8 +5,8 @@
 # Site
 title: 心有猛虎，细嗅蔷薇
 subtitle: 既然选择了远方，便只顾风雨兼程
-description: FromSkyDynasty's Blog
-author: FromSkyDynasty
+description: timogal's Blog
+author: timogal
 language: zh-Hans
 timezone:
 
@@ -64,7 +64,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: c-next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

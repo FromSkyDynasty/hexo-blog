@@ -1,0 +1,3 @@
+[submodule "themes/c-next"]
+	path = themes/c-next
+	url = https://github.com/timogal/hexo-theme-next.git
