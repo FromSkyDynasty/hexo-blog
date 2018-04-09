@@ -1,6 +1,6 @@
 ---
 title: LeetCode题目 ( JAVA解决思路记录 ) - 5.字符串最长回文
-date: 2017-06-21 18:18:24
+date: 2018-04-09 19:18:24
 tags:
     - leetcode
     - longest-palindromic-substring
@@ -10,7 +10,7 @@ categories:
     - Algorithm
 ---
 
-### 题目描述：
+### 题目描述
 
 给定一个字符串 s，找到s中最长的[回文](https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%96%87)子串。你可以假设 s 长度最长为1000。
 <!-- more -->
