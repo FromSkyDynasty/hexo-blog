@@ -1,0 +1,1 @@
+![](https://travis-ci.org/timogal/hexo-blog.svg?branch=master)
