@@ -13,7 +13,7 @@ categories:
 ---
 
 在使用JPA的时候发现有的时候jpa并没有去执行total的查询语句，但还是返回了`totalElements`这个字段, 处于好奇，于是查了一波源码.
-
+<!-- more -->
 ```java
 // org.springframework.data.jpa.repository.query.JpaQueryExecution#PagedExecution
 /**
